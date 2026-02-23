@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   backend:
-    image: ${DOCKERHUB_USERNAME:-yourusername}/mean-task-backend:latest
+    image: ${DOCKERHUB_USERNAME:-moizaman}/mean-task-backend:latest
     build: ./backend
     container_name: mean-backend
     ports:
@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: ${DOCKERHUB_USERNAME:-yourusername}/mean-task-frontend:latest
+    image: ${DOCKERHUB_USERNAME:-moizaman}/mean-task-frontend:latest
     build: ./frontend
     container_name: mean-frontend
     ports:

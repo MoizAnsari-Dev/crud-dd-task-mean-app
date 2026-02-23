@@ -4,7 +4,7 @@ pipeline {
     environment {
         // --- DOCKER HUB CONFIGURATION ---
         // Change this to your actual Docker Hub username
-        DOCKERHUB_USERNAME = 'your_dockerhub_username'
+        DOCKERHUB_USERNAME = 'moizaman'
         
         // This MUST match the ID of the credentials you create in Jenkins (Global scope, Username/Password)
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
