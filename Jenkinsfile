@@ -13,8 +13,8 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                // Polls latest changes from GitHub
-                checkout scm
+                // Clone explicitly from the GitHub repository
+                git branch: 'main', url: 'https://github.com/MoizAnsari-Dev/crud-dd-task-mean-app.git'
             }
         }
 
