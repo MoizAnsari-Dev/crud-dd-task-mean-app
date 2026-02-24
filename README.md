@@ -2,7 +2,7 @@
 
 This project is a fully containerized Full-Stack CRUD Application built using the **MEAN stack** (MongoDB, Express, Angular 15, Node.js). It includes a complete CI/CD pipeline using Jenkins and is served securely through an Nginx Reverse Proxy on port `80`.
 
-## 📦 Architecture & Infrastructure
+## Architecture & Infrastructure
 
 - **Frontend:** Angular 15 Client
 - **Backend:** Node.js & Express REST API
@@ -12,7 +12,7 @@ This project is a fully containerized Full-Stack CRUD Application built using th
 
 ---
 
-## 🚀 Setup & Deployment Instructions
+## Setup & Deployment Instructions
 
 ### Option 1: Using Docker Compose (Recommended)
 The easiest way to run the entire application locally or on a Virtual Machine without installing Node or MongoDB directly is by utilizing the provided `docker-compose.yml` file.
@@ -67,7 +67,7 @@ npx ng serve --port 8081
 
 ---
 
-## 🛠 CI/CD Configuration (Jenkins)
+## CI/CD Configuration (Jenkins)
 
 This repository includes a `Jenkinsfile` that fully automates the CI/CD lifecycle:
 1. **Checkout:** Pulls the latest code from the `main` branch.
@@ -79,7 +79,7 @@ This repository includes a `Jenkinsfile` that fully automates the CI/CD lifecycl
 
 ---
 
-## 📸 Screenshots & Deliverables
+## Screenshots & Deliverables
 
 *(Please refer to the repository images/ directory or append the requested screenshots here)*
 
