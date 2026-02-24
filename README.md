@@ -81,16 +81,14 @@ This repository includes a `Jenkinsfile` that fully automates the CI/CD lifecycl
 
 ## Screenshots & Deliverables
 
-*(Please refer to the repository images/ directory or append the requested screenshots here)*
-
 ### 1. CI/CD Configuration and Execution
-*Placeholder for Jenkins pipeline success screenshot*
+<img width="1333" height="632" alt="image" src="https://github.com/user-attachments/assets/f7a8008d-bf53-4b41-85ca-b1eec97af22f" />
+
 
 ### 2. Docker Image Build & Push Process
-*Placeholder for Docker Hub repository / Terminal output*
+<img width="1663" height="181" alt="image" src="https://github.com/user-attachments/assets/2af07c26-576f-4872-b184-35399cb414a2" />
+
 
 ### 3. Application Deployment and Working UI
-*Placeholder for the Angular UI running live in the browser*
-
-### 4. Nginx Setup & Infrastructure
-*Placeholder for Nginx config terminal / Network tab routing `/api` correctly*
+<img width="1686" height="491" alt="image" src="https://github.com/user-attachments/assets/eb6176b1-3516-4e11-a313-49de53f809dc" />
+<img width="1686" height="491" alt="image" src="https://github.com/user-attachments/assets/d5e0793e-e12a-40a7-9698-eab8e9fa4ad9" />
