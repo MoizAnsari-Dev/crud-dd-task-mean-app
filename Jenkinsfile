@@ -30,17 +30,24 @@ pipeline {
             }
         }
 
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                }
+            }
+        }
+
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    echo "Logging into Docker Hub securely..."
-                    withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS_ID, passwordVariable: 'DOCKERHUB_PASS', usernameVariable: 'DOCKERHUB_USER')]) {
-                        sh "echo \$DOCKERHUB_PASS | docker login -u \$DOCKERHUB_USER --password-stdin"
-                        
-                        echo "Pushing freshly built images to Docker Hub..."
-                        sh "docker push ${DOCKERHUB_USERNAME}/mean-task-backend:latest"
-                        sh "docker push ${DOCKERHUB_USERNAME}/mean-task-frontend:latest"
-                    }
+                    echo "Pushing freshly built images to Docker Hub..."
+                    sh "docker push ${DOCKERHUB_USERNAME}/mean-task-backend:latest"
+                    sh "docker push ${DOCKERHUB_USERNAME}/mean-task-frontend:latest"
                 }
             }
         }
