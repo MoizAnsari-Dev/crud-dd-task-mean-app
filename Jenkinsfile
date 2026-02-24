@@ -76,9 +76,7 @@ pipeline {
             echo "Pipeline failed. Check Jenkins logs for details."
         }
         always {
-            // Logout for security
             sh "docker logout || true"
-            // Cleanup the workspace to avoid old cache taking up Jenkins disk
             cleanWs()
         }
     }
