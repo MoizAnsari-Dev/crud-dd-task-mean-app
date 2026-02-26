@@ -30,14 +30,28 @@ exports.create = (req, res) => {
     });
 };
 
+const getPagination = (page, size) => {
+  const limit = size ? +size : 3;
+  const offset = page ? page * limit : 0;
+
+  return { limit, offset };
+};
+
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
-  const title = req.query.title;
+  const { page, size, title } = req.query;
   var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
 
-  Tutorial.find(condition)
+  const { limit, offset } = getPagination(page, size);
+
+  Tutorial.paginate(condition, { offset, limit })
     .then(data => {
-      res.send(data);
+      res.send({
+        totalItems: data.totalDocs,
+        tutorials: data.docs,
+        totalPages: data.totalPages,
+        currentPage: data.page ? data.page - 1 : (page ? Number(page) : 0),
+      });
     })
     .catch(err => {
       res.status(500).send({

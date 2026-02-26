@@ -39,8 +39,21 @@
     </div>
 
     <div *ngIf="!isLoading && tutorials && tutorials.length > 0">
+      <div class="mb-3 d-flex align-items-center justify-content-between">
+        <div class="text-muted font-weight-bold" style="font-size: 0.9rem;">
+          Items per page:
+          <select (change)="handlePageSizeChange($event)" class="modern-input py-1 px-2 ml-2"
+            style="width: auto; display: inline-block;">
+            <option *ngFor="let size of pageSizes" [value]="size" [selected]="size === pageSize">
+              {{ size }}
+            </option>
+          </select>
+        </div>
+      </div>
+
       <div class="list-group custom-list-group">
-        <div class="custom-list-item" *ngFor="let tutorial of tutorials; let i = index"
+        <div class="custom-list-item"
+          *ngFor="let tutorial of tutorials | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems: count }; let i = index"
           [class.active-item]="i == currentIndex" (click)="setActiveTutorial(tutorial, i)">
           <div class="d-flex justify-content-between align-items-center w-100">
             <span class="font-weight-500">{{ tutorial.title }}</span>
@@ -50,6 +63,12 @@
             </svg>
           </div>
         </div>
+      </div>
+
+      <div class="mt-4 d-flex justify-content-center">
+        <pagination-controls previousLabel="Prev" nextLabel="Next" [responsive]="true"
+          (pageChange)="handlePageChange($event)">
+        </pagination-controls>
       </div>
 
       <button class="btn-modern-danger w-100 mt-4" (click)="removeAllTutorials()">

@@ -17,19 +17,48 @@ export class TutorialsListComponent implements OnInit {
   title = '';
   isLoading = true;
 
+  page = 1;
+  count = 0;
+  pageSize = 3;
+  pageSizes = [3, 6, 9];
+
   constructor(private tutorialService: TutorialService) { }
 
   ngOnInit(): void {
     this.retrieveTutorials();
   }
 
+  getRequestParams(searchTitle: string, page: number, pageSize: number): any {
+    let params: any = {};
+
+    if (searchTitle) {
+      params[`title`] = searchTitle;
+    }
+
+    if (page) {
+      // Backend expects 0-indexed page
+      params[`page`] = page - 1;
+    }
+
+    if (pageSize) {
+      params[`size`] = pageSize;
+    }
+
+    return params;
+  }
+
   retrieveTutorials(): void {
+    const params = this.getRequestParams(this.title, this.page, this.pageSize);
+
     this.isLoading = true;
-    this.tutorialService.getAll()
+    this.tutorialService.getAll(params)
       .subscribe({
-        next: (data) => {
-          this.tutorials = data;
-          console.log(data);
+        next: (response) => {
+          const { tutorials, totalItems } = response;
+          this.tutorials = tutorials;
+          this.count = totalItems;
+          console.log(response);
+
           // Small simulated delay for demonstrating the new premium loading spinner UX
           setTimeout(() => this.isLoading = false, 400);
         },
@@ -38,6 +67,17 @@ export class TutorialsListComponent implements OnInit {
           this.isLoading = false;
         }
       });
+  }
+
+  handlePageChange(event: number): void {
+    this.page = event;
+    this.retrieveTutorials();
+  }
+
+  handlePageSizeChange(event: any): void {
+    this.pageSize = event.target.value;
+    this.page = 1;
+    this.retrieveTutorials();
   }
 
   refreshList(): void {
@@ -83,22 +123,8 @@ export class TutorialsListComponent implements OnInit {
   }
 
   searchTitle(): void {
-    this.currentTutorial = {};
-    this.currentIndex = -1;
-    this.isLoading = true;
-
-    this.tutorialService.findByTitle(this.title)
-      .subscribe({
-        next: (data) => {
-          this.tutorials = data;
-          console.log(data);
-          setTimeout(() => this.isLoading = false, 400);
-        },
-        error: (e) => {
-          console.error(e);
-          this.isLoading = false;
-        }
-      });
+    this.page = 1;
+    this.retrieveTutorials();
   }
 
 }
