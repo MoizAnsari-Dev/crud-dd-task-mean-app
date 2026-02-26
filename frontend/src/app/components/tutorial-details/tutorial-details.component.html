@@ -1,94 +1,84 @@
-<div *ngIf="viewMode; else editable">
+<div *ngIf="viewMode; else editable" class="modern-card">
   <div *ngIf="currentTutorial.id">
-    <h4>Tutorial</h4>
-    <div>
-      <label><strong>Title:</strong></label> {{ currentTutorial.title }}
+    <h4 style="color: var(--primary); font-weight: 600;" class="mb-4">Tutorial Details</h4>
+    <div class="mb-2">
+      <label class="text-muted font-weight-bold mr-2">Title:</label>
+      <span style="font-size: 1.1rem; color: var(--text-main);">{{ currentTutorial.title }}</span>
     </div>
-    <div>
-      <label><strong>Description:</strong></label>
-      {{ currentTutorial.description }}
+    <div class="mb-2">
+      <label class="text-muted font-weight-bold mr-2">Description:</label>
+      <span style="color: var(--text-main);">{{ currentTutorial.description }}</span>
     </div>
-    <div>
-      <label><strong>Status:</strong></label>
-      {{ currentTutorial.published ? "Published" : "Pending" }}
+    <div class="mb-4">
+      <label class="text-muted font-weight-bold mr-2">Status:</label>
+      <span class="badge" [ngClass]="currentTutorial.published ? 'badge-success' : 'badge-warning'"
+        style="padding: 0.4em 0.6em; border-radius: 4px;">
+        {{ currentTutorial.published ? "Published" : "Pending" }}
+      </span>
     </div>
 
-    <a
-      class="badge badge-warning"
-      routerLink="/tutorials/{{ currentTutorial.id }}"
-    >
-      Edit
+    <a class="btn-modern px-4" routerLink="/tutorials/{{ currentTutorial.id }}">
+      Edit Tutorial
     </a>
   </div>
 
-  <div *ngIf="!currentTutorial">
-    <br />
-    <p>Please click on a Tutorial...</p>
+  <div *ngIf="!currentTutorial" class="text-center py-5 text-muted">
+    <svg style="width: 48px; height: 48px; margin-bottom: 1rem; opacity: 0.5;" fill="none" stroke="currentColor"
+      viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122">
+      </path>
+    </svg>
+    <p style="font-size: 1.1rem;">Please select a Tutorial from the list...</p>
   </div>
 </div>
 
 <ng-template #editable>
-  <div *ngIf="currentTutorial.id" class="edit-form">
-    <h4>Tutorial</h4>
-    <form>
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input
-          type="text"
-          class="form-control"
-          id="title"
-          [(ngModel)]="currentTutorial.title"
-          name="title"
-        />
+  <div *ngIf="currentTutorial.id" class="edit-form modern-card">
+    <h4 style="color: var(--primary); font-weight: 600;" class="mb-4">Edit Tutorial</h4>
+    <form class="mb-4">
+      <div class="form-group mb-3">
+        <label for="title" class="text-muted font-weight-bold mb-2">Title</label>
+        <input type="text" class="form-control modern-input" id="title" [(ngModel)]="currentTutorial.title"
+          name="title" />
       </div>
-      <div class="form-group">
-        <label for="description">Description</label>
-        <input
-          type="text"
-          class="form-control"
-          id="description"
-          [(ngModel)]="currentTutorial.description"
-          name="description"
-        />
+      <div class="form-group mb-4">
+        <label for="description" class="text-muted font-weight-bold mb-2">Description</label>
+        <textarea class="form-control modern-input" id="description" rows="3" [(ngModel)]="currentTutorial.description"
+          name="description"></textarea>
       </div>
 
       <div class="form-group">
-        <label><strong>Status:</strong></label>
-        {{ currentTutorial.published ? "Published" : "Pending" }}
+        <label class="text-muted font-weight-bold mr-2">Status:</label>
+        <span class="badge" [ngClass]="currentTutorial.published ? 'badge-success' : 'badge-warning'"
+          style="padding: 0.4em 0.6em; border-radius: 4px;">
+          {{ currentTutorial.published ? "Published" : "Pending" }}
+        </span>
       </div>
     </form>
 
-    <button
-      class="badge badge-primary mr-2"
-      *ngIf="currentTutorial.published"
-      (click)="updatePublished(false)"
-    >
-      UnPublish
-    </button>
-    <button
-      *ngIf="!currentTutorial.published"
-      class="badge badge-primary mr-2"
-      (click)="updatePublished(true)"
-    >
-      Publish
-    </button>
+    <div class="d-flex flex-wrap gap-2 mt-4" style="gap: 0.5rem;">
+      <button class="btn-modern mr-2" style="background-color: #64748b;" *ngIf="currentTutorial.published"
+        (click)="updatePublished(false)">
+        UnPublish
+      </button>
+      <button *ngIf="!currentTutorial.published" class="btn-modern mr-2" style="background-color: #10b981;"
+        (click)="updatePublished(true)">
+        Publish
+      </button>
 
-    <button class="badge badge-danger mr-2" (click)="deleteTutorial()">
-      Delete
-    </button>
+      <button class="btn-modern-danger mr-2" (click)="deleteTutorial()">
+        Delete
+      </button>
 
-    <button
-      type="submit"
-      class="badge badge-success mb-2"
-      (click)="updateTutorial()"
-    >
-      Update
-    </button>
-    <p>{{ message }}</p>
+      <button type="submit" class="btn-modern ml-auto" (click)="updateTutorial()">
+        Save Updates
+      </button>
+    </div>
+    <p class="mt-3 text-success font-weight-bold">{{ message }}</p>
   </div>
 
-  <div *ngIf="!currentTutorial.id">
-    <br />
-    <p>Cannot access this Tutorial...</p>
+  <div *ngIf="!currentTutorial.id" class="modern-card text-center py-5 text-muted">
+    <p style="font-size: 1.1rem;">Cannot access this Tutorial...</p>
   </div>
 </ng-template>

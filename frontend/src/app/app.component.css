@@ -1,0 +1,29 @@
+.modern-navbar {
+    background-color: var(--surface);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+    border-bottom: 1px solid var(--border-light);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-link {
+    color: var(--text-light) !important;
+    font-weight: 500;
+    margin: 0 0.5rem;
+    padding: 0.5rem 1rem !important;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary) !important;
+    background-color: var(--bg-color);
+}
+
+.nav-link.active {
+    color: var(--primary) !important;
+    background-color: rgba(79, 70, 229, 0.08);
+    /* Soft primary tint */
+}

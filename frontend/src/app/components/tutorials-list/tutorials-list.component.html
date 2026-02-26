@@ -1,43 +1,52 @@
 <div class="list row">
-  <div class="col-md-8">
-    <div class="input-group mb-3">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Search by title"
-        [(ngModel)]="title"
-      />
+  <div class="col-md-8 mb-4">
+    <div class="input-group">
+      <input type="text" class="form-control modern-input" placeholder="Search by tutorial title..." [(ngModel)]="title"
+        (keyup.enter)="searchTitle()" />
       <div class="input-group-append">
-        <button
-          class="btn btn-outline-secondary"
-          (click)="searchTitle()"
-        >
+        <button class="btn-modern ml-2" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
+          (click)="searchTitle()">
+          <svg style="width: 20px; height: 20px; margin-right: 6px;" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
           Search
         </button>
       </div>
     </div>
   </div>
-  <div class="col-md-6">
-    <h4>Tutorials List</h4>
-    <ul class="list-group">
-      <li
-        class="list-group-item"
-        *ngFor="let tutorial of tutorials; let i = index"
-        [class.active]="i == currentIndex"
-        (click)="setActiveTutorial(tutorial, i)"
-      >
-        {{ tutorial.title }}
-      </li>
-    </ul>
 
-    <button class="m-3 btn btn-sm btn-danger" (click)="removeAllTutorials()">
-      Remove All
+  <div class="col-md-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 style="color: var(--text-main); font-weight: 600; margin: 0;">Tutorials</h4>
+    </div>
+
+    <div class="list-group custom-list-group">
+      <div class="custom-list-item" *ngFor="let tutorial of tutorials; let i = index"
+        [class.active-item]="i == currentIndex" (click)="setActiveTutorial(tutorial, i)">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <span class="font-weight-500">{{ tutorial.title }}</span>
+          <svg *ngIf="i == currentIndex" style="width: 18px; height: 18px; color: var(--primary);" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-modern-danger w-100 mt-4" (click)="removeAllTutorials()">
+      <svg style="width: 18px; height: 18px; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+        </path>
+      </svg>
+      Remove All Tutorials
     </button>
   </div>
-  <div class="col-md-6">
-    <app-tutorial-details
-      [viewMode]="true"
-      [currentTutorial]="currentTutorial"
-    ></app-tutorial-details>
+
+  <div class="col-md-7 mt-4 mt-md-0">
+    <app-tutorial-details [viewMode]="true" [currentTutorial]="currentTutorial"></app-tutorial-details>
   </div>
 </div>
