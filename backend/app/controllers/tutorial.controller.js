@@ -44,7 +44,7 @@ exports.findAll = (req, res) => {
 
   const { limit, offset } = getPagination(page, size);
 
-  Tutorial.paginate(condition, { offset, limit })
+  Tutorial.paginate(condition, { offset, limit, sort: { createdAt: -1 } })
     .then(data => {
       res.send({
         totalItems: data.totalDocs,
