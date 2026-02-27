@@ -157,4 +157,16 @@ export class TutorialsListComponent implements OnInit {
     this.retrieveTutorials();
   }
 
+  selectAll(): void {
+    if (this.tutorials) {
+      if (this.selectedTutorials.size === this.tutorials.length && this.tutorials.length > 0) {
+        this.selectedTutorials.clear();
+      } else {
+        this.tutorials.forEach(t => {
+          if (t.id) this.selectedTutorials.add(t.id);
+        });
+      }
+    }
+  }
+
 }
