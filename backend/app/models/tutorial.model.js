@@ -5,7 +5,9 @@ module.exports = mongoose => {
     {
       title: String,
       description: String,
-      published: Boolean
+      published: Boolean,
+      pinned: Boolean,
+      rating: { type: Number, default: 0 }
     },
     { timestamps: true }
   );

@@ -62,7 +62,7 @@ export class TutorialDetailsComponent implements OnInit {
           Swal.fire({
             position: 'top-end',
             icon: 'success',
-            title: status ? 'Published Successfully' : 'Unpublished Successfully',
+            title: status ? 'Journal Locked Successfully' : 'Journal Unlocked Successfully',
             showConfirmButton: false,
             timer: 1500,
             toast: true
@@ -82,7 +82,7 @@ export class TutorialDetailsComponent implements OnInit {
           Swal.fire({
             position: 'top-end',
             icon: 'success',
-            title: 'Tutorial updated successfully!',
+            title: 'Entry updated successfully!',
             showConfirmButton: false,
             timer: 1500,
             toast: true
@@ -95,7 +95,7 @@ export class TutorialDetailsComponent implements OnInit {
   deleteTutorial(): void {
     Swal.fire({
       title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      text: "This journal entry will be permanently deleted.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#ef4444',
@@ -118,6 +118,11 @@ export class TutorialDetailsComponent implements OnInit {
           });
       }
     });
+  }
+
+  getWordCount(text?: string): number {
+    if (!text) return 0;
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
   }
 
 }

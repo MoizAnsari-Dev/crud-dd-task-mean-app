@@ -39,12 +39,16 @@ const getPagination = (page, size) => {
 
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
-  const { page, size, title } = req.query;
+  const { page, size, title, published } = req.query;
   var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
+
+  if (published !== undefined) {
+    condition.published = published === 'true';
+  }
 
   const { limit, offset } = getPagination(page, size);
 
-  Tutorial.paginate(condition, { offset, limit, sort: { createdAt: -1 } })
+  Tutorial.paginate(condition, { offset, limit, sort: { pinned: -1, createdAt: -1 } })
     .then(data => {
       res.send({
         totalItems: data.totalDocs,

@@ -1,4 +1,122 @@
-.submit-form {
-  max-width: 400px;
-  margin: auto;
+.notion-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  background-color: var(--background);
+  min-height: calc(100vh - 64px);
+}
+
+.notion-top-bar {
+  border-bottom: 1px solid transparent;
+  padding-bottom: 1rem;
+}
+
+.notion-title-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: var(--foreground);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  padding: 0;
+}
+
+.notion-title-input::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.3;
+}
+
+.notion-body-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 1.05rem;
+  color: var(--foreground);
+  line-height: 1.8;
+  resize: vertical;
+  min-height: 300px;
+  padding: 0.5rem 0;
+  font-family: inherit;
+}
+
+.notion-body-input::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.5;
+}
+
+.notion-save-btn {
+  background: var(--foreground);
+  color: var(--background);
+  border: none;
+  border-radius: 4px;
+  padding: 0.35rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.notion-save-btn:hover {
+  opacity: 0.9;
+}
+
+.notion-save-btn:active {
+  transform: scale(0.97);
+}
+
+.notion-save-btn:disabled {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Success State */
+.notion-success-state {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+.success-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--accent);
+}
+
+.notion-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.notion-btn-secondary:hover {
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

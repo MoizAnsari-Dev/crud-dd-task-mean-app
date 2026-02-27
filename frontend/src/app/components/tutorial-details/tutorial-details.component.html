@@ -1,100 +1,121 @@
-<div *ngIf="viewMode; else editable" class="modern-card">
-  <div *ngIf="currentTutorial.id">
-    <h4 style="color: var(--primary); font-weight: 600;" class="mb-4">Tutorial Details</h4>
-    <div class="mb-2">
-      <label class="text-muted font-weight-bold mr-2">Title:</label>
-      <span style="font-size: 1.1rem; color: var(--text-main);">{{ currentTutorial.title }}</span>
-    </div>
-    <div class="mb-2">
-      <label class="text-muted font-weight-bold mr-2">Description:</label>
-      <span style="color: var(--text-main);">{{ currentTutorial.description }}</span>
-    </div>
-    <div class="mb-4">
-      <label class="text-muted font-weight-bold mr-2">Status:</label>
+<div *ngIf="viewMode; else editable" class="modern-card h-100 p-0 border-0">
+  <div *ngIf="currentTutorial.id" class="detail-container">
+    <div class="px-4 py-3 border-bottom bg-background d-flex justify-content-between align-items-center">
+      <h5 class="m-0 font-weight-600" style="color: var(--foreground); font-size: 1.1rem;">Details</h5>
       <span class="badge" [ngClass]="currentTutorial.published ? 'badge-success' : 'badge-warning'"
-        style="padding: 0.4em 0.6em; border-radius: 4px;">
-        {{ currentTutorial.published ? "Published" : "Pending" }}
+        style="font-size: 0.75rem;">
+        {{ currentTutorial.published ? "Locked" : "Draft" }}
       </span>
     </div>
-    <div class="mb-4 text-muted" style="font-size: 0.85rem;" *ngIf="currentTutorial.createdAt">
-      <div class="mb-1"><svg
-          style="width: 14px; height: 14px; margin-right: 4px; display: inline; vertical-align: text-bottom;"
-          fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg> <strong>Created:</strong> {{ currentTutorial.createdAt | date:'medium' }}</div>
-      <div *ngIf="currentTutorial.updatedAt && currentTutorial.updatedAt !== currentTutorial.createdAt">
-        <svg style="width: 14px; height: 14px; margin-right: 4px; display: inline; vertical-align: text-bottom;"
-          fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
-          </path>
-        </svg> <strong>Last Updated:</strong> {{ currentTutorial.updatedAt | date:'medium' }}
+
+    <div class="p-4">
+      <div class="mb-4">
+        <label class="text-muted text-uppercase font-weight-600"
+          style="font-size: 0.75rem; letter-spacing: 1px;">Title</label>
+        <p class="font-weight-500 mt-1 mb-0" style="font-size: 1.1rem; color: var(--foreground);">{{
+          currentTutorial.title }}</p>
+      </div>
+
+      <div class="mb-4">
+        <label class="text-muted text-uppercase font-weight-600"
+          style="font-size: 0.75rem; letter-spacing: 1px;">Journal Content</label>
+        <p class="mt-1 mb-0" style="color: var(--muted-foreground); line-height: 1.6;">{{ currentTutorial.description }}
+        </p>
+      </div>
+
+      <div class="mb-4 d-flex flex-column gap-2" style="font-size: 0.85rem;" *ngIf="currentTutorial.createdAt">
+        <div class="text-muted d-flex align-items-center">
+          <svg style="width: 14px; height: 14px; margin-right: 6px;" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="font-weight-500 mr-2">Created:</span> {{ currentTutorial.createdAt | date:'medium' }}
+        </div>
+        <div class="text-muted d-flex align-items-center"
+          *ngIf="currentTutorial.updatedAt && currentTutorial.updatedAt !== currentTutorial.createdAt">
+          <svg style="width: 14px; height: 14px; margin-right: 6px;" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+            </path>
+          </svg>
+          <span class="font-weight-500 mr-2">Updated:</span> {{ currentTutorial.updatedAt | date:'medium' }}
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <a class="btn-modern-outline w-100" routerLink="/tutorials/{{ currentTutorial.id }}">
+          Edit Entry Details
+        </a>
       </div>
     </div>
-
-    <a class="btn-modern px-4" routerLink="/tutorials/{{ currentTutorial.id }}">
-      Edit Tutorial
-    </a>
   </div>
 
-  <div *ngIf="!currentTutorial" class="text-center py-5 text-muted">
-    <svg style="width: 48px; height: 48px; margin-bottom: 1rem; opacity: 0.5;" fill="none" stroke="currentColor"
-      viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+  <div *ngIf="!currentTutorial" class="empty-state border-0 bg-transparent h-100">
+    <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
         d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122">
       </path>
     </svg>
-    <p style="font-size: 1.1rem;">Please select a Tutorial from the list...</p>
+    <p class="m-0 text-muted">Select an entry from the list to view its details</p>
   </div>
 </div>
 
 <ng-template #editable>
-  <div *ngIf="currentTutorial.id" class="edit-form modern-card">
-    <h4 style="color: var(--primary); font-weight: 600;" class="mb-4">Edit Tutorial</h4>
+  <div *ngIf="currentTutorial.id" class="modern-card max-auto" style="max-width: 600px; margin: 0 auto;">
+    <h4 class="mb-4 font-weight-600" style="color: var(--foreground); letter-spacing: -0.025em;">Edit Entry</h4>
+
     <form class="mb-4">
-      <div class="form-group mb-3">
-        <label for="title" class="text-muted font-weight-bold mb-2">Title</label>
+      <div class="form-group mb-4">
+        <label for="title" class="text-muted font-weight-500 mb-2">Title</label>
         <input type="text" class="form-control modern-input" id="title" [(ngModel)]="currentTutorial.title"
           name="title" />
       </div>
+
       <div class="form-group mb-4">
-        <label for="description" class="text-muted font-weight-bold mb-2">Description</label>
-        <textarea class="form-control modern-input" id="description" rows="3" [(ngModel)]="currentTutorial.description"
+        <label for="description" class="text-muted font-weight-500 mb-2 d-flex justify-content-between w-100">
+          <span>Journal Content</span>
+          <span style="font-size: 0.8rem; font-weight: 400;">{{ getWordCount(currentTutorial.description) }}
+            words</span>
+        </label>
+        <textarea class="form-control modern-input" id="description" rows="10" [(ngModel)]="currentTutorial.description"
           name="description"></textarea>
       </div>
 
-      <div class="form-group">
-        <label class="text-muted font-weight-bold mr-2">Status:</label>
+      <div class="form-group mb-4">
+        <label class="text-muted font-weight-500 mr-3">Current Status</label>
         <span class="badge" [ngClass]="currentTutorial.published ? 'badge-success' : 'badge-warning'"
-          style="padding: 0.4em 0.6em; border-radius: 4px;">
-          {{ currentTutorial.published ? "Published" : "Pending" }}
+          style="font-size: 0.85rem;">
+          {{ currentTutorial.published ? "Locked" : "Draft" }}
         </span>
       </div>
     </form>
 
-    <div class="d-flex flex-wrap gap-2 mt-4" style="gap: 0.5rem;">
-      <button class="btn-modern mr-2" style="background-color: #64748b;" *ngIf="currentTutorial.published"
-        (click)="updatePublished(false)">
-        UnPublish
+    <div class="action-buttons d-flex flex-wrap gap-2 mt-4 pt-4 border-top">
+      <button class="btn-modern-secondary" *ngIf="currentTutorial.published" (click)="updatePublished(false)">
+        Unlock Entry
       </button>
-      <button *ngIf="!currentTutorial.published" class="btn-modern mr-2" style="background-color: #10b981;"
-        (click)="updatePublished(true)">
-        Publish
+      <button class="btn-modern-secondary" style="color: #10b981; border-color: #10b981;"
+        *ngIf="!currentTutorial.published" (click)="updatePublished(true)">
+        Lock Entry
       </button>
 
-      <button class="btn-modern-danger mr-2" (click)="deleteTutorial()">
+      <button class="btn-modern-danger" (click)="deleteTutorial()">
         Delete
       </button>
 
       <button type="submit" class="btn-modern ml-auto" (click)="updateTutorial()">
-        Save Updates
+        Save Changes
       </button>
     </div>
-    <p class="mt-3 text-success font-weight-bold">{{ message }}</p>
+
+    <div class="text-center mt-3" *ngIf="message">
+      <p class="text-success font-weight-500 m-0">{{ message }}</p>
+    </div>
   </div>
 
-  <div *ngIf="!currentTutorial.id" class="modern-card text-center py-5 text-muted">
-    <p style="font-size: 1.1rem;">Cannot access this Tutorial...</p>
+  <div *ngIf="!currentTutorial.id" class="modern-card empty-state max-auto" style="max-width: 600px; margin: 0 auto;">
+    <p class="m-0 text-muted">Cannot access this entry...</p>
   </div>
 </ng-template>

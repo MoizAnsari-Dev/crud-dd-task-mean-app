@@ -1,33 +1,47 @@
-<div>
-  <nav class="navbar navbar-expand navbar-light modern-navbar">
-    <div class="container">
-      <a href="#" class="navbar-brand font-weight-bold" style="color: var(--primary);">DD Task</a>
-      <div class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a routerLink="tutorials" class="nav-link" routerLinkActive="active">Tutorials</a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="add" class="nav-link" routerLinkActive="active">Add</a>
-        </li>
+<div class="app-layout">
+  <header class="modern-header">
+    <div class="header-container">
+      <div class="brand-wrapper">
+        <a routerLink="/tutorials" class="brand" style="display: flex; align-items: center;">
+          <svg style="width: 28px; height: 28px; margin-right: 12px; filter: drop-shadow(0 0 8px rgba(99,102,241,0.5));"
+            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L14.8541 9.1459L22 12L14.8541 14.8541L12 22L9.1459 14.8541L2 12L9.1459 9.1459L12 2Z"
+              fill="url(#brandGradient)" />
+            <path d="M12 5V19M5 12H19" stroke="white" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <defs>
+              <linearGradient id="brandGradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#818cf8" />
+                <stop offset="1" stop-color="#4f46e5" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <span
+            style="font-weight: 800; letter-spacing: -0.04em; background: linear-gradient(135deg, var(--foreground) 30%, var(--muted-foreground) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Luminary</span>
+        </a>
+        <nav class="nav-links">
+          <a routerLink="tutorials" class="nav-link" routerLinkActive="active">My Journal</a>
+          <a routerLink="add" class="nav-link" routerLinkActive="active">New Entry</a>
+        </nav>
       </div>
 
       <button class="theme-toggle-btn" (click)="toggleTheme()" aria-label="Toggle Dark Mode">
-        <svg *ngIf="!isDarkMode" style="width: 20px; height: 20px; color: #4f46e5;" fill="none" stroke="currentColor"
+        <svg *ngIf="!isDarkMode" style="width: 18px; height: 18px;" fill="none" stroke="currentColor"
           viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
         </svg>
-        <svg *ngIf="isDarkMode" style="width: 20px; height: 20px; color: #fbbf24;" fill="none" stroke="currentColor"
-          viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg *ngIf="isDarkMode" style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
           </path>
         </svg>
       </button>
     </div>
-  </nav>
+  </header>
 
-  <div class="container mt-5">
+  <main class="main-content">
     <router-outlet></router-outlet>
-  </div>
+  </main>
 </div>

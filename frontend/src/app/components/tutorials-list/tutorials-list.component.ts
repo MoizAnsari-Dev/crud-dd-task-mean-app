@@ -16,6 +16,7 @@ export class TutorialsListComponent implements OnInit {
   currentIndex = -1;
   title = '';
   isLoading = true;
+  currentTab: 'all' | 'published' | 'draft' = 'all';
 
   page = 1;
   count = 0;
@@ -44,6 +45,12 @@ export class TutorialsListComponent implements OnInit {
 
     if (pageSize) {
       params[`size`] = pageSize;
+    }
+
+    if (this.currentTab === 'published') {
+      params[`published`] = true;
+    } else if (this.currentTab === 'draft') {
+      params[`published`] = false;
     }
 
     return params;
@@ -108,7 +115,7 @@ export class TutorialsListComponent implements OnInit {
       Swal.fire({
         icon: 'info',
         title: 'No Selection',
-        text: 'Please select at least one tutorial to delete.',
+        text: 'Please select at least one entry to delete.',
         confirmButtonColor: '#4f46e5'
       });
       return;
@@ -116,7 +123,7 @@ export class TutorialsListComponent implements OnInit {
 
     Swal.fire({
       title: 'Are you absolutely sure?',
-      text: `This will delete ${this.selectedTutorials.size} tutorial(s) from the database!`,
+      text: `This will delete ${this.selectedTutorials.size} entry(s) from the database!`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#ef4444',
@@ -157,6 +164,17 @@ export class TutorialsListComponent implements OnInit {
     this.retrieveTutorials();
   }
 
+  setTab(tab: 'all' | 'published' | 'draft'): void {
+    if (this.currentTab !== tab) {
+      this.currentTab = tab;
+      this.page = 1;
+      this.selectedTutorials.clear();
+      this.currentIndex = -1;
+      this.currentTutorial = {};
+      this.retrieveTutorials();
+    }
+  }
+
   selectAll(): void {
     if (this.tutorials) {
       if (this.selectedTutorials.size === this.tutorials.length && this.tutorials.length > 0) {
@@ -169,4 +187,103 @@ export class TutorialsListComponent implements OnInit {
     }
   }
 
+  quickTogglePublish(tutorial: Tutorial, event: Event): void {
+    event.stopPropagation();
+    if (!tutorial.id) return;
+    const status = !tutorial.published;
+
+    this.tutorialService.update(tutorial.id, { published: status }).subscribe({
+      next: () => {
+        tutorial.published = status;
+        Swal.fire({
+          position: 'top-end', icon: 'success',
+          title: `Entry ${status ? 'Locked' : 'Unlocked'}`,
+          showConfirmButton: false, timer: 1500, toast: true
+        });
+      },
+      error: (e) => console.error(e)
+    });
+  }
+
+  quickRate(tutorial: Tutorial, rating: number, event: Event): void {
+    event.stopPropagation();
+    if (!tutorial.id) return;
+
+    // Toggle off if they click the same rating
+    const newRating = tutorial.rating === rating ? 0 : rating;
+
+    this.tutorialService.update(tutorial.id, { rating: newRating }).subscribe({
+      next: () => {
+        tutorial.rating = newRating;
+        Swal.fire({
+          position: 'top-end', icon: 'success',
+          title: `Entry Rated ${newRating} Stars!`,
+          showConfirmButton: false, timer: 1000, toast: true
+        });
+      },
+      error: (e) => console.error(e)
+    });
+  }
+
+  quickTogglePin(tutorial: Tutorial, event: Event): void {
+    event.stopPropagation();
+    if (!tutorial.id) return;
+    const isPinned = !tutorial.pinned;
+
+    this.tutorialService.update(tutorial.id, { pinned: isPinned ? true : null }).subscribe({
+      next: () => {
+        tutorial.pinned = isPinned;
+        Swal.fire({
+          position: 'top-end', icon: 'success',
+          title: `Entry ${isPinned ? 'Pinned' : 'Unpinned'}`,
+          showConfirmButton: false, timer: 1500, toast: true
+        });
+        if (isPinned) this.page = 1; // Jump to page 1 if pinned so they can see it at the top
+        this.refreshList(); // Reload to re-sort items
+      },
+      error: (e) => console.error(e)
+    });
+  }
+
+  quickDelete(id: string | undefined, event: Event): void {
+    event.stopPropagation();
+    if (!id) return;
+
+    Swal.fire({
+      title: 'Delete this entry?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.tutorialService.delete(id).subscribe({
+          next: () => {
+            this.refreshList();
+            Swal.fire({
+              position: 'top-end', icon: 'success',
+              title: 'Tutorial deleted',
+              showConfirmButton: false, timer: 1500, toast: true
+            });
+          },
+          error: (e) => console.error(e)
+        });
+      }
+    });
+  }
+
+  getTags(title: string | undefined): string[] {
+    if (!title) return [];
+    let tags: string[] = [];
+    const lowerTitle = title.toLowerCase();
+
+    if (lowerTitle.includes('work') || lowerTitle.includes('job')) tags.push('Work');
+    if (lowerTitle.includes('life') || lowerTitle.includes('personal')) tags.push('Personal');
+    if (lowerTitle.includes('goal') || lowerTitle.includes('plan')) tags.push('Goals');
+    if (lowerTitle.includes('idea') || lowerTitle.includes('thought')) tags.push('Ideas');
+    if (lowerTitle.includes('memory') || lowerTitle.includes('remember')) tags.push('Memories');
+
+    return tags;
+  }
 }

@@ -1,115 +1,190 @@
-<div class="list row">
-  <div class="col-md-8 mb-4">
-    <div class="input-group">
-      <input type="text" class="form-control modern-input" placeholder="Search by tutorial title..." [(ngModel)]="title"
+<div class="dashboard-layout">
+  <!-- Top Action Bar -->
+  <div class="action-bar mb-4">
+    <div class="search-container flex-grow-1">
+      <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+      <input type="text" class="modern-input search-input" placeholder="Search journal entries..." [(ngModel)]="title"
         (keyup.enter)="searchTitle()" />
-      <div class="input-group-append">
-        <button class="btn-modern ml-2" style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
-          (click)="searchTitle()">
-          <svg style="width: 20px; height: 20px; margin-right: 6px;" fill="none" stroke="currentColor"
-            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
-          Search
-        </button>
+    </div>
+
+    <div class="action-divider"></div>
+
+    <div class="filters-container px-3">
+      <div class="d-flex align-items-center">
+        <span class="text-muted text-sm mr-2 font-weight-500">View:</span>
+        <select (change)="handlePageSizeChange($event)" class="modern-input select-input" style="width: auto;">
+          <option *ngFor="let size of pageSizes" [value]="size" [selected]="size === pageSize">
+            {{ size }} per page
+          </option>
+        </select>
       </div>
     </div>
   </div>
 
-  <div class="col-md-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 style="color: var(--text-main); font-weight: 600; margin: 0;">Tutorials</h4>
-    </div>
-
-    <div *ngIf="isLoading" class="text-center py-5">
-      <div class="modern-spinner"></div>
-      <p class="mt-3 text-muted font-weight-bold">Loading tutorials...</p>
-    </div>
-
-    <div *ngIf="!isLoading && (!tutorials || tutorials.length === 0)" class="empty-state">
-      <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-        </path>
-      </svg>
-      <h5>No Tutorials Found</h5>
-      <p>There are no tutorials in the database matching your criteria.</p>
-    </div>
-
-    <div *ngIf="!isLoading && tutorials && tutorials.length > 0">
-      <div class="mb-3 d-flex align-items-center justify-content-between">
-        <div class="text-muted font-weight-bold" style="font-size: 0.9rem;">
-          Items per page:
-          <select (change)="handlePageSizeChange($event)" class="modern-input py-1 px-2 ml-2"
-            style="width: auto; display: inline-block;">
-            <option *ngFor="let size of pageSizes" [value]="size" [selected]="size === pageSize">
-              {{ size }}
-            </option>
-          </select>
+  <div class="row">
+    <!-- List Section -->
+    <div class="col-lg-7 mb-4">
+      <div class="modern-card list-card p-0">
+        <!-- Tabs -->
+        <div class="list-tabs d-flex border-bottom">
+          <button class="tab-btn" [ngClass]="{'active': currentTab === 'all'}" (click)="setTab('all')">All
+            Entries</button>
+          <button class="tab-btn" [ngClass]="{'active': currentTab === 'published'}"
+            (click)="setTab('published')">Published</button>
+          <button class="tab-btn" [ngClass]="{'active': currentTab === 'draft'}"
+            (click)="setTab('draft')">Drafts</button>
         </div>
-        <button *ngIf="selectedTutorials.size > 0" class="btn-modern-secondary btn-sm" (click)="selectAll()"
-          style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
-          {{ tutorials && tutorials.length > 0 && selectedTutorials.size === tutorials.length ? 'Deselect All' : 'Select
-          All' }}
-        </button>
-      </div>
 
-      <div class="d-flex flex-column gap-3">
-        <div class="modern-card p-3 mb-3" style="cursor: pointer; transition: all 0.2s ease;"
-          *ngFor="let tutorial of tutorials | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems: count }; let i = index"
-          [style.border]="i == currentIndex ? '2px solid var(--primary)' : '1px solid var(--border-light)'"
-          (click)="setActiveTutorial(tutorial, i)">
+        <!-- List Header -->
+        <div class="list-header p-3 border-bottom d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-2">
+            <h5 class="m-0 font-weight-600 text-capitalize" style="color: var(--foreground); font-size: 1.1rem;">{{
+              currentTab === 'all' ? 'All' : currentTab }} Entries</h5>
+            <span class="badge" style="background: var(--primary); color: var(--primary-foreground);">{{count}}</span>
+          </div>
 
-          <div class="d-flex align-items-center">
-            <div class="mr-3" (click)="$event.stopPropagation()">
-              <input type="checkbox" style="width: 18px; height: 18px; cursor: pointer;"
-                [checked]="selectedTutorials.has(tutorial.id)" (change)="toggleSelection(tutorial, $event)">
-            </div>
+          <div class="header-actions d-flex gap-2">
+            <button *ngIf="tutorials && tutorials.length > 0" class="btn-modern-outline btn-sm action-btn"
+              (click)="selectAll()">
+              {{ selectedTutorials.size === tutorials.length ? 'Deselect All' : 'Select Page' }}
+            </button>
+            <button *ngIf="selectedTutorials.size > 0"
+              class="btn-modern-danger btn-sm action-btn d-flex align-items-center gap-1"
+              (click)="deleteSelectedTutorials()">
+              <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                </path>
+              </svg>
+              Delete ({{ selectedTutorials.size }})
+            </button>
+          </div>
+        </div>
 
-            <div class="w-100 d-flex justify-content-between align-items-center">
-              <div>
-                <h5 style="margin-bottom: 4px; font-weight: 600;">{{ tutorial.title }}</h5>
-                <span class="badge" [ngClass]="tutorial.published ? 'badge-success' : 'badge-warning'"
-                  style="font-size: 0.75rem;">
-                  {{ tutorial.published ? "Published" : "Pending" }}
-                </span>
-                <p class="text-muted mt-2 mb-0" style="font-size: 0.85rem;" *ngIf="tutorial.description">
-                  {{ tutorial.description.length > 60 ? (tutorial.description | slice:0:60) + '...' :
-                  tutorial.description }}
-                </p>
+        <!-- Loading / Empty -->
+        <div *ngIf="isLoading" class="p-5 text-center d-flex flex-column align-items-center">
+          <div class="modern-spinner mb-3"></div>
+          <span class="text-muted font-weight-500">Syncing data...</span>
+        </div>
+
+        <div *ngIf="!isLoading && (!tutorials || tutorials.length === 0)" class="p-5 text-center">
+          <svg style="width: 48px; height: 48px; color: var(--border); margin-bottom: 1rem;" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+            </path>
+          </svg>
+          <p class="text-muted font-weight-500 m-0">No items found matching criteria.</p>
+        </div>
+
+        <!-- List Content -->
+        <div class="list-body" *ngIf="!isLoading && tutorials && tutorials.length > 0">
+          <div class="tutorial-row"
+            *ngFor="let tutorial of tutorials | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems: count }; let i = index"
+            [ngClass]="{'active-row': i === currentIndex}" (click)="setActiveTutorial(tutorial, i)">
+
+            <div class="d-flex align-items-start w-100">
+              <div class="checkbox-wrapper mr-3 mt-1" (click)="$event.stopPropagation()">
+                <input type="checkbox" class="modern-checkbox" [checked]="selectedTutorials.has(tutorial.id)"
+                  (change)="toggleSelection(tutorial, $event)">
               </div>
 
-              <svg *ngIf="i == currentIndex" style="width: 24px; height: 24px; color: var(--primary);" fill="none"
-                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
+              <div class="tutorial-info flex-grow-1">
+                <div class="d-flex align-items-center justify-content-between w-100">
+                  <h6 class="tutorial-title m-0 d-flex align-items-center">
+                    {{ tutorial.title }}
+                    <svg *ngIf="tutorial.pinned"
+                      style="width: 14px; height: 14px; margin-left: 6px; color: var(--primary);" fill="none"
+                      stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                    </svg>
+                  </h6>
+
+                  <div class="row-actions" (click)="$event.stopPropagation()">
+                    <button class="icon-btn" [ngClass]="tutorial.published ? 'text-success' : 'text-warning'"
+                      [title]="tutorial.published ? 'Unlock' : 'Lock'" (click)="quickTogglePublish(tutorial, $event)">
+                      <svg *ngIf="tutorial.published" style="width: 16px; height: 16px;" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                      </svg>
+                      <svg *ngIf="!tutorial.published" style="width: 16px; height: 16px;" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z">
+                        </path>
+                      </svg>
+                    </button>
+                    <button class="icon-btn text-primary" [title]="tutorial.pinned ? 'Unpin' : 'Pin'"
+                      (click)="quickTogglePin(tutorial, $event)">
+                      <svg *ngIf="tutorial.pinned" style="width: 16px; height: 16px;" fill="currentColor"
+                        viewBox="0 0 24 24" stroke="none">
+                        <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                      </svg>
+                      <svg *ngIf="!tutorial.pinned" style="width: 16px; height: 16px;" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                      </svg>
+                    </button>
+                    <button class="icon-btn text-danger" title="Delete" (click)="quickDelete(tutorial.id, $event)">
+                      <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="tutorial-meta d-flex align-items-center mt-2 flex-wrap gap-2">
+                  <span class="status-dot" [ngClass]="tutorial.published ? 'bg-success' : 'bg-warning'"></span>
+                  <span class="text-sm mr-2">{{ tutorial.published ? "Locked" : "Draft" }}</span>
+
+                  <ng-container *ngFor="let tag of getTags(tutorial.title)">
+                    <span class="tech-tag">{{ tag }}</span>
+                  </ng-container>
+
+                  <div class="star-rating d-flex ml-3" style="gap: 2px;">
+                    <!-- Draw 5 stars, compare index with tutorial.rating -->
+                    <svg *ngFor="let star of [1,2,3,4,5]" (click)="quickRate(tutorial, star, $event)" class="star-icon"
+                      [ngClass]="{'active': (tutorial.rating || 0) >= star}"
+                      style="width: 14px; height: 14px; cursor: pointer; color: var(--border); transition: color 0.2s;"
+                      fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                      </path>
+                    </svg>
+                  </div>
+
+                  <span class="text-muted text-sm text-truncate flex-grow-1"
+                    style="max-width: 250px; margin-left: auto;" *ngIf="tutorial.description">
+                    {{ tutorial.description }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="mt-4 d-flex justify-content-center">
-        <pagination-controls previousLabel="Prev" nextLabel="Next" [responsive]="true"
-          (pageChange)="handlePageChange($event)">
-        </pagination-controls>
+        <!-- Pagination Footer -->
+        <div class="list-footer p-3 border-top" *ngIf="!isLoading && count > pageSize">
+          <pagination-controls previousLabel="Prev" nextLabel="Next" [responsive]="true"
+            (pageChange)="handlePageChange($event)">
+          </pagination-controls>
+        </div>
       </div>
-
-      <button *ngIf="selectedTutorials.size > 0" class="btn-modern-danger w-100 mt-4"
-        (click)="deleteSelectedTutorials()">
-        <svg style="width: 18px; height: 18px; margin-right: 6px; display: inline;" fill="none" stroke="currentColor"
-          viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-          </path>
-        </svg>
-        Delete Selected ({{ selectedTutorials.size }})
-      </button>
     </div>
-  </div>
 
-  <div class="col-md-7 mt-4 mt-md-0">
-    <app-tutorial-details [viewMode]="true" [currentTutorial]="currentTutorial"></app-tutorial-details>
+    <!-- Details Section -->
+    <div class="col-lg-5">
+      <app-tutorial-details class="h-100 d-block" [viewMode]="true"
+        [currentTutorial]="currentTutorial"></app-tutorial-details>
+    </div>
   </div>
 </div>

@@ -3,6 +3,8 @@ export class Tutorial {
   title?: string;
   description?: string;
   published?: boolean;
+  pinned?: boolean;
+  rating?: number;
   createdAt?: string;
   updatedAt?: string;
 }

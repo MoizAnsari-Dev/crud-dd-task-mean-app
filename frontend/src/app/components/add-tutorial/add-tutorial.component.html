@@ -1,33 +1,49 @@
-<div>
-  <div class="submit-form modern-card mx-auto" style="max-width: 500px; margin-top: 2rem;">
-    <h4 class="mb-4" style="color: var(--primary); font-weight: 600;" *ngIf="!submitted">Create Tutorial</h4>
+<div class="notion-container">
+  <!-- Content Area -->
+  <div class="notion-editor-wrapper" *ngIf="!submitted">
 
-    <div *ngIf="!submitted">
-      <div class="form-group mb-4">
-        <label for="title" class="text-muted font-weight-bold mb-2">Title</label>
-        <input type="text" class="form-control modern-input" id="title" placeholder="e.g. Master Angular 15" required
-          [(ngModel)]="tutorial.title" name="title" />
+    <!-- Top Action Bar -->
+    <div class="notion-top-bar d-flex justify-content-between align-items-center mb-4">
+      <div class="text-muted" style="font-size: 0.85rem;">
+        {{ getWordCount(tutorial.description) }} words
       </div>
-
-      <div class="form-group mb-4">
-        <label for="description" class="text-muted font-weight-bold mb-2">Description</label>
-        <textarea class="form-control modern-input" id="description" placeholder="What is this tutorial about?" rows="3"
-          required [(ngModel)]="tutorial.description" name="description"></textarea>
-      </div>
-
-      <button (click)="saveTutorial()" class="btn-modern w-100 mt-2">Submit Tutorial</button>
+      <button class="notion-save-btn" [disabled]="!tutorial.title || tutorial.title.trim() === ''"
+        (click)="saveTutorial()">
+        Save Entry
+      </button>
     </div>
 
-    <div *ngIf="submitted" class="text-center py-4">
-      <div class="mb-3">
-        <svg style="width: 48px; height: 48px; color: #10b981;" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    <!-- Title Area (Looks like H1) -->
+    <div class="notion-title-block mb-3">
+      <input type="text" class="notion-title-input" placeholder="Untitled" autocomplete="off"
+        [(ngModel)]="tutorial.title" name="title" />
+    </div>
+
+    <!-- Body Area (Looks like blank page) -->
+    <div class="notion-body-block">
+      <textarea class="notion-body-input" placeholder="Press Enter to continue with an empty page, or start typing..."
+        rows="15" [(ngModel)]="tutorial.description" name="description"></textarea>
+    </div>
+  </div>
+
+  <!-- Success State -->
+  <div *ngIf="submitted" class="notion-success-state text-center py-5 mt-5">
+    <div class="mb-4 d-flex justify-content-center">
+      <div class="success-icon-wrapper">
+        <svg style="width: 32px; height: 32px; color: var(--foreground);" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
         </svg>
       </div>
-      <h4 class="mb-4" style="color: var(--text-main);">Tutorial was submitted successfully!</h4>
-      <button class="btn-modern" (click)="newTutorial()">Add Another Tutorial</button>
     </div>
+    <h3 class="mb-3 font-weight-700" style="color: var(--foreground); letter-spacing: -0.02em;">Saved securely to your
+      journal.</h3>
+
+    <button class="notion-btn-secondary mt-3" (click)="newTutorial()">
+      <svg style="width: 16px; height: 16px; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      New page
+    </button>
   </div>
 </div>

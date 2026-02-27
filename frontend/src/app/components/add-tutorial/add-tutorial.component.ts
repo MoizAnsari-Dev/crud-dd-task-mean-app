@@ -25,7 +25,7 @@ export class AddTutorialComponent {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Tutorial title is required!',
+        text: 'Entry title is required!',
         confirmButtonColor: '#4f46e5'
       });
       return;
@@ -44,7 +44,7 @@ export class AddTutorialComponent {
           Swal.fire({
             position: 'top-end',
             icon: 'success',
-            title: 'Tutorial created successfully',
+            title: 'Entry created successfully',
             showConfirmButton: false,
             timer: 1500,
             toast: true
@@ -61,6 +61,11 @@ export class AddTutorialComponent {
       description: '',
       published: false
     };
+  }
+
+  getWordCount(text?: string): number {
+    if (!text) return 0;
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
   }
 
 }
