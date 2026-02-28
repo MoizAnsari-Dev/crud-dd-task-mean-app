@@ -9,6 +9,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  storageClassName: gp2
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -17,7 +18,7 @@ metadata:
   namespace: mean-app
 spec:
   replicas: 1
-  selector:
+  selector: 
     matchLabels:
       app: mongodb
   template:
