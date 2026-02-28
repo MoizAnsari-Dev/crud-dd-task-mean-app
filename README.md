@@ -1,113 +1,113 @@
 <div align="center">
   <img src="https://github.com/user-attachments/assets/eb6176b1-3516-4e11-a313-49de53f809dc" alt="Luminary Journal Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;">
   
-  <h1 align="center">✨ Luminary Journal ✨</h1>
+  <h1 align="center">✨ Luminary Journal: Kubernetes Edition ✨</h1>
   <p align="center">
-    <strong>A seamless, distraction-free personal journaling platform inspired by Notion.</strong>
+    <strong>A production-ready MEAN stack application demonstrating advanced DevOps principles, Kubernetes orchestration, and CI/CD automation.</strong>
   </p>
 
   <p align="center">
-    <img src="https://img.shields.io/badge/Stack-MEAN-green.svg?style=for-the-badge&logo=mongodb" alt="MEAN Stack" />
-    <img src="https://img.shields.io/badge/Frontend-Angular_15-dd0031.svg?style=for-the-badge&logo=angular" alt="Angular" />
-    <img src="https://img.shields.io/badge/Backend-Node_&_Express-339933.svg?style=for-the-badge&logo=nodedotjs" alt="Node" />
-    <img src="https://img.shields.io/badge/Proxy-Nginx-009639.svg?style=for-the-badge&logo=nginx" alt="Nginx" />
+    <img src="https://img.shields.io/badge/Orchestrator-Kubernetes-326CE5.svg?style=for-the-badge&logo=kubernetes" alt="Kubernetes" />
     <img src="https://img.shields.io/badge/Container-Docker-2496ED.svg?style=for-the-badge&logo=docker" alt="Docker" />
+    <img src="https://img.shields.io/badge/CI%2FCD-Jenkins-D24939.svg?style=for-the-badge&logo=jenkins" alt="Jenkins" />
+    <img src="https://img.shields.io/badge/Proxy-Nginx-009639.svg?style=for-the-badge&logo=nginx" alt="Nginx" />
+    <img src="https://img.shields.io/badge/Stack-MEAN-green.svg?style=for-the-badge&logo=mongodb" alt="MEAN Stack" />
   </p>
 </div>
 
 ---
 
-## 📖 What is Luminary?
+## 📖 Overview
 
-Originally a CRUD application for coding tutorials, this project has been completely overhauled into a **minimalist personal journal**. It focuses on an edge-to-edge blank canvas writing environment, offering automated intelligence to organize your private entries while looking stunning. 
+While on the surface this is a sleek, minimalist personal journaling platform (built with Angular 15, Node.js, and MongoDB), under the hood it has been completely architected to showcase **scalable, production-ready DevOps infrastructure**. 
 
-It is fully containerized with **Docker** and uses **Nginx** as a reverse proxy, making it a production-ready template that can be integrated directly into CI/CD pipelines.
-
----
-
-## 🚀 Key Features
-
-- **📝 Notion-Style Editor Canvas**
-  - Experience distraction-free writing! The "New Entry" screen mimics Notion’s edge-to-edge blank page with gorgeous typography, borderless inputs, and soft ghost-text placeholders.
-- **🔒 Private Journal Locking Mechanism**
-  - Instead of "publishing" entries, Luminary natively acts as a private draft board. When an entry is finished, click the `Lock` pad-lock to vault it.
-- **🧠 Auto AI-Powered Tagging**
-  - Titles are scanned logically. An entry named "My Work Ideas" gets automatically categorized under `Work` and `Ideas` tags directly on the dashboard.
-- **⭐ 5-Star Interactive Rating System**
-  - Want to remember a specific day? Instantly rank your entries from 0 to 5 stars via hovering icon interactions directly from the list view without reloading.
-- **📊 Real-Time Word Count Tracking**
-  - A sleek floating widget instantly counts and updates your word count as you type your thoughts onto the canvas.
-- **🌗 Built-In Dark Mode & Glassmorphism UI**
-  - Beautiful, dynamic Shadden/Vercel-inspired tab layouts with smooth animations, custom scrollbars, and instant dark-mode toggling.
+This repository includes a full suite of declarative Kubernetes manifests, zero-downtime CI/CD deployment pipelines, horizontal autoscalers, and secure configuration maps.
 
 ---
 
-## 🏗️ Architecture & Infrastructure
+## 🏗️ DevOps Architecture & Kubernetes Infrastructure
 
-- **Frontend:** Angular 15 Client with custom raw CSS
-- **Backend:** Node.js & Express REST API using Mongoose
-- **Database:** MongoDB configured natively with Mongoose v7 optimizations
-- **Proxy:** Nginx safely handles internal traffic, routing `/api/*` requests identically.
-- **CI/CD:** Jenkins declarative pipeline pushing into Docker Hub automatically.
+The application has been explicitly designed to run on a Kubernetes cluster with the following advanced configurations located in the `/k8s` directory:
+
+### 1. Zero-Trust Networking & Resource Isolation
+- **Custom Namespace:** All workloads are isolated dynamically into the `mean-app` namespace.
+- **ClusterIP Integrity:** The `mongodb` and `backend` services utilize secure internal `ClusterIP` networks. They are completely sealed off from the external internet to prevent unauthorized access.
+- **Nginx Ingress / Load Balancing:** The frontend and backend are intelligently marshalled by an Nginx reverse-proxy. Nginx itself is exposed via a robust Kubernetes `LoadBalancer`, unifying external access safely through Port 80.
+
+### 2. Secrets & Configuration Management
+- **Declarative ConfigMaps:** Non-sensitive environmental variables (like the application `PORT` and internal `DB_HOST` routing) are abstracted out of the Docker images and injected at runtime via `k8s/configmap.yaml`.
+- **Opaque Secrets:** The sensitive MongoDB connection string and credentials are base64-encoded and securely passed directly into the backend pods via Kubernetes Secrets (`k8s/secret.yaml`).
+
+### 3. High Availability & Data Persistence
+- **Horizontal Pod Autoscaling (HPA):** Both the frontend and backend deployments are tethered to Kubernetes `HorizontalPodAutoscaler` objects. If CPU utilization exceeds 60% or Memory exceeds 70%, the cluster automatically replicates the backend (up to 5 pods) and the frontend (up to 4 pods) to handle the load dynamically.
+- **Self-Healing Probes:** Every pod is configured with sophisticated `livenessProbe` and `readinessProbe` checks. The cluster actively monitors HTTP endpoints to ensure containers are ready for traffic, gracefully preventing "CrashLoopBackOff" timeouts during heavy Angular compilation.
+- **Stateful Storage (AWS EBS):** The MongoDB Pod utilizes a `PersistentVolumeClaim` tied to the dynamically provisioned AWS `gp2` StorageClass. This guarantees database persistence even if the node shuts down or the database pod is destroyed.
 
 ---
 
-## ⚙️ Setup & Deployment
+## 🔄 Automated CI/CD Pipelines (Jenkins)
 
-### 1. Environment Configuration (.env)
-The application expects environment variables to securely connect to the database. Create a file named `.env` in the `/backend` folder.
-```env
-# /backend/.env
-DB_URL=mongodb://192.168.49.2:30017/mydatabase
-PORT=8080
-```
-> *(A `.env.example` file is included in the repo!)*
+This repository comes equipped with a modern `Jenkinsfile1` dedicated entirely to Kubernetes:
 
-### Option A: Using Docker Compose (Recommended)
-The absolute easiest way to run the entire application natively.
+1. **Checkout:** Pulls latest code from the `main` branch.
+2. **Build:** Compiles the raw source code into robust frontend/backend Docker images.
+3. **Registry Push:** Authenticates securely with Docker Hub credentials and pushes the newly built `latest` images natively.
+4. **Deploy to Cluster:** Connects directly into the target Kubernetes cluster and declaratively maps everything into existence:
+   - Configures namespaces, secrets, and config maps.
+   - Bootstraps the database PVC and provisions AWS storage.
+   - Spins up Application pods, LoadBalancers, and Autoscalers.
+   - Initiates a zero-downtime `kubectl rollout restart` to force the live pods to seamlessly consume the newly compiled images.
+
+---
+
+## ⚙️ Quick Start Setup Instructions
+
+### Option 1: Full Kubernetes Deployment (Recommended)
+Assuming you have a running cluster (Minikube, EKS, or GKE) and `kubectl` configured:
+
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/MoizAnsari-Dev/crud-dd-task-mean-app.git
 cd crud-dd-task-mean-app
 
-# Run the stack
+# 2. Generate the namespace first
+kubectl apply -f k8s/namespace.yaml
+
+# 3. Deploy configuration maps and secrets
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/secret.yaml
+
+# 4. Deploy the infrastructure (DB, API, Client, and Proxy)
+kubectl apply -f k8s/mongodb.yaml
+kubectl apply -f k8s/backend.yaml
+kubectl apply -f k8s/frontend.yaml
+kubectl apply -f k8s/nginx.yaml
+
+# 5. Enable Autoscaling Rules
+kubectl apply -f k8s/hpa.yaml
+
+# Verify everything is running natively!
+kubectl get all -n mean-app
+```
+
+### Option 2: Docker Compose (For Local Testing)
+For rapid local validation without a Kubernetes cluster, a `docker-compose.yml` file is provided that perfectly mimics the architecture locally.
+
+```bash
 docker-compose up -d --build
 ```
 > **UI Access:** `http://localhost/`  
-> **API Access:** `http://localhost/api/tutorials` (Routed seamlessly by Nginx)
-
-### Option B: Running Locally (Development Mode)
-If you want to edit the code live:
-
-1. **Start a local MongoDB container:**
-   ```bash
-   docker run -d -p 27017:27017 --name mongodb-server mongo:latest
-   ```
-2. **Start the Backend:**
-   ```bash
-   cd backend
-   npm install
-   node server.js
-   ```
-3. **Start the Frontend:**
-   ```bash
-   cd frontend
-   npm install
-   npx ng serve --port 8081
-   ```
+> **API Access:** `http://localhost/api/tutorials`
 
 ---
 
-## 🔄 CI/CD Automation (Jenkins)
+## 🚀 Application Features (The Frontend)
 
-This repository includes a `Jenkinsfile` that implements a complete Jenkins Pipeline:
-1. **Checkout:** Pulls latest code from the `main` branch.
-2. **Build:** Uses Docker Compose to build the new Frontend/Backend images.
-3. **Push:** Logs into Docker Hub using standard credentials and pushes the securely built containers.
-4. **Deploy:** Reaches out to the target Virtual Machine via SSH, pulls the refreshed images, and intelligently restarts the ecosystem.
-
----
+- **Notion-Style UI Canvas:** Minimalist, edge-to-edge blank page journal environment for distraction-free typing. 
+- **AI Auto-Categorization:** System logically scans titles to automatically inject smart categorization tags like "Work" or "Personal" instantly.
+- **Live Memory-Dom Tracking:** Dynamically counts and displays real-time word statistics over your entries without network requests.
+- **Glassmorphism Design:** Beautiful dark-mode UI styled using Vercel/Shadcn design aesthetic guidelines.
 
 <p align="center">
-  <i>Built with modern aesthetic passion.</i>
+  <i>Architected with passion.</i>
 </p>
