@@ -1,66 +1,79 @@
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/eb6176b1-3516-4e11-a313-49de53f809dc" alt="Luminary Journal Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;">
-  
-  <h1 align="center">✨ Luminary Journal: Kubernetes Edition ✨</h1>
-  <p align="center">
-    <strong>A production-ready MEAN stack application demonstrating advanced DevOps principles, Kubernetes orchestration, and CI/CD automation.</strong>
-  </p>
 
-  <p align="center">
-    <img src="https://img.shields.io/badge/Orchestrator-Kubernetes-326CE5.svg?style=for-the-badge&logo=kubernetes" alt="Kubernetes" />
-    <img src="https://img.shields.io/badge/Container-Docker-2496ED.svg?style=for-the-badge&logo=docker" alt="Docker" />
-    <img src="https://img.shields.io/badge/CI%2FCD-Jenkins-D24939.svg?style=for-the-badge&logo=jenkins" alt="Jenkins" />
-    <img src="https://img.shields.io/badge/Proxy-Nginx-009639.svg?style=for-the-badge&logo=nginx" alt="Nginx" />
-    <img src="https://img.shields.io/badge/Stack-MEAN-green.svg?style=for-the-badge&logo=mongodb" alt="MEAN Stack" />
-  </p>
+<img src="https://github.com/user-attachments/assets/eb6176b1-3516-4e11-a313-49de53f809dc" alt="Luminary Journal Banner" width="100%" style="border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+
+# ✨ Luminary Journal ✨  
+**A breathtaking, distraction-free personal journaling platform powered by Enterprise-Grade Kubernetes Infrastructure.**
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" alt="Angular" />
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node" />
+  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+  <br/>
+  <img src="https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white" alt="Kubernetes" />
+  <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white" alt="Jenkins" />
+  <img src="https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white" alt="Nginx" />
+</p>
+
+[Explore Features](#-uiux-features) • [DevOps Architecture](#-enterprise-devops--kubernetes) • [Getting Started](#-getting-started) • [CI/CD](#-automated-cicd-pipeline)
+
 </div>
 
 ---
 
-## 📖 Overview
+## 📖 About The Project
 
-While on the surface this is a sleek, minimalist personal journaling platform (built with Angular 15, Node.js, and MongoDB), under the hood it has been completely architected to showcase **scalable, production-ready DevOps infrastructure**. 
+What started as a simple Mean Stack CRUD tutorial application has evolved into **Luminary Journal**: a highly polished, Notion-inspired writing companion designed to capture your thoughts in a beautifully minimalist environment. 
 
-This repository includes a full suite of declarative Kubernetes manifests, zero-downtime CI/CD deployment pipelines, horizontal autoscalers, and secure configuration maps.
-
----
-
-## 🏗️ DevOps Architecture & Kubernetes Infrastructure
-
-The application has been explicitly designed to run on a Kubernetes cluster with the following advanced configurations located in the `/k8s` directory:
-
-### 1. Zero-Trust Networking & Resource Isolation
-- **Custom Namespace:** All workloads are isolated dynamically into the `mean-app` namespace.
-- **ClusterIP Integrity:** The `mongodb` and `backend` services utilize secure internal `ClusterIP` networks. They are completely sealed off from the external internet to prevent unauthorized access.
-- **Nginx Ingress / Load Balancing:** The frontend and backend are intelligently marshalled by an Nginx reverse-proxy. Nginx itself is exposed via a robust Kubernetes `LoadBalancer`, unifying external access safely through Port 80.
-
-### 2. Secrets & Configuration Management
-- **Declarative ConfigMaps:** Non-sensitive environmental variables (like the application `PORT` and internal `DB_HOST` routing) are abstracted out of the Docker images and injected at runtime via `k8s/configmap.yaml`.
-- **Opaque Secrets:** The sensitive MongoDB connection string and credentials are base64-encoded and securely passed directly into the backend pods via Kubernetes Secrets (`k8s/secret.yaml`).
-
-### 3. High Availability & Data Persistence
-- **Horizontal Pod Autoscaling (HPA):** Both the frontend and backend deployments are tethered to Kubernetes `HorizontalPodAutoscaler` objects. If CPU utilization exceeds 60% or Memory exceeds 70%, the cluster automatically replicates the backend (up to 5 pods) and the frontend (up to 4 pods) to handle the load dynamically.
-- **Self-Healing Probes:** Every pod is configured with sophisticated `livenessProbe` and `readinessProbe` checks. The cluster actively monitors HTTP endpoints to ensure containers are ready for traffic, gracefully preventing "CrashLoopBackOff" timeouts during heavy Angular compilation.
-- **Stateful Storage (AWS EBS):** The MongoDB Pod utilizes a `PersistentVolumeClaim` tied to the dynamically provisioned AWS `gp2` StorageClass. This guarantees database persistence even if the node shuts down or the database pod is destroyed.
+But Luminary isn't just a pretty interface. Underneath its glassmorphic design lies a **production-ready Kubernetes engine**, featuring horizontal auto-scaling, stateful persistent storage, zero-trust networking, and seamless Jenkins CI/CD integration. 
 
 ---
 
-## 🔄 Automated CI/CD Pipelines (Jenkins)
+## 🎨 UI/UX Features
 
-This repository comes equipped with a modern `Jenkinsfile1` dedicated entirely to Kubernetes:
+We obsessed over every pixel to create a journaling experience that feels like a premium SaaS product.
 
-1. **Checkout:** Pulls latest code from the `main` branch.
-2. **Build:** Compiles the raw source code into robust frontend/backend Docker images.
-3. **Registry Push:** Authenticates securely with Docker Hub credentials and pushes the newly built `latest` images natively.
-4. **Deploy to Cluster:** Connects directly into the target Kubernetes cluster and declaratively maps everything into existence:
-   - Configures namespaces, secrets, and config maps.
-   - Bootstraps the database PVC and provisions AWS storage.
-   - Spins up Application pods, LoadBalancers, and Autoscalers.
-   - Initiates a zero-downtime `kubectl rollout restart` to force the live pods to seamlessly consume the newly compiled images.
+| Feature | Description |
+| :--- | :--- |
+| **📝 Notion-Style Canvas** | Say goodbye to clunky borders. The "New Entry" screen mimics a flawless blank page with oversized typography, edge-to-edge inputs, and soft ghost-text placeholders. |
+| **🔒 Journal Vault System** | Luminary natively acts as a private draft board. When an entry is finished, click the **Lock** padlock to instantly vault it securely. |
+| **🧠 AI-Powered Tagging** | Titles are scanned intelligently. An entry named "My Work Ideas" gets automatically categorized under `Work` and `Ideas` tags directly on your dashboard. |
+| **⭐ Interactive Rating** | Instantly rank your days/entries from 0 to 5 stars via hovering icon interactions directly from the list view—no reloading required. |
+| **📊 Live Word Count** | A sleek, floating widget instantly counts and updates your word statistics in real-time as you type your thoughts onto the canvas. |
+| **🌗 Glassmorphism UI** | Built with fully custom, modern CSS. Enjoy beautiful Vercel-inspired tab layouts, smooth micro-animations, custom scrollbars, and vibrant status badges. |
+
+<details>
+<summary>📸 <strong>Click to view UI Screenshots</strong></summary>
+
+<br/>
+<img src="https://github.com/user-attachments/assets/eb6176b1-3516-4e11-a313-49de53f809dc" width="800">
+<img src="https://github.com/user-attachments/assets/d5e0793e-e12a-40a7-9698-eab8e9fa4ad9" width="800">
+</details>
 
 ---
 
-## ⚙️ Quick Start Setup Instructions
+## 🛡️ Enterprise DevOps & Kubernetes
+
+Luminary Journal is architected to scale. The entire environment is declaratively defined in the `/k8s` directory, built for high availability and zero-downtime deployments.
+
+<details open>
+<summary><strong>📐 Architecture Highlights</strong></summary>
+
+* **Zero-Trust Networking:** All workloads are isolated dynamically into the `mean-app` namespace. The MongoDB and Node.js APIs utilize secure `ClusterIP` networks, sealed tightly from the external internet.
+* **Nginx Ingress / Load Balancing:** The entire stack is intelligently marshalled by an Nginx reverse-proxy facing the public via a robust Kubernetes `LoadBalancer` on Port 80.
+* **Declarative Config & Secrets:** Hardcoded variables are banished. Non-sensitive routing variables are injected via `ConfigMap`, while MongoDB credentials are base64-encoded through Opaque `Secret` files.
+* **Horizontal Pod Autoscaling (HPA):** Powered by Kubernetes Metrics Server. If CPU spikes over 60% or RAM exceeds 70%, the API automatically scales (up to 5 pods) to handle the load.
+* **Self-Healing Probes:** Every pod utilizes surgical `livenessProbe` and `readinessProbe` HTTP checks to prevent "CrashLoopBackOff" timeouts during heavy Angular compilation.
+* **Stateful AWS Storage:** The Database utilizes a `PersistentVolumeClaim` tied dynamically to the AWS `gp2` StorageClass, guaranteeing journal persistence even during cluster node rotations.
+</details>
+
+---
+
+## 🚀 Getting Started
+
+Deploying Luminary Journal is a breeze, whether you want to spin it up locally or push it to a cloud cluster.
 
 ### Option 1: Full Kubernetes Deployment (Recommended)
 Assuming you have a running cluster (Minikube, EKS, or GKE) and `kubectl` configured:
@@ -85,29 +98,40 @@ kubectl apply -f k8s/nginx.yaml
 
 # 5. Enable Autoscaling Rules
 kubectl apply -f k8s/hpa.yaml
-
-# Verify everything is running natively!
-kubectl get all -n mean-app
 ```
+*Run `kubectl get all -n mean-app` to verify all resources!*
 
-### Option 2: Docker Compose (For Local Testing)
-For rapid local validation without a Kubernetes cluster, a `docker-compose.yml` file is provided that perfectly mimics the architecture locally.
-
+### Option 2: Docker Compose (Local Testing)
+For rapid local validation without a Kubernetes cluster:
 ```bash
 docker-compose up -d --build
 ```
-> **UI Access:** `http://localhost/`  
-> **API Access:** `http://localhost/api/tutorials`
+* **UI Access:** `http://localhost/`  
+* **API Access:** `http://localhost/api/tutorials`
 
 ---
 
-## 🚀 Application Features (The Frontend)
+## 🔄 Automated CI/CD Pipeline
 
-- **Notion-Style UI Canvas:** Minimalist, edge-to-edge blank page journal environment for distraction-free typing. 
-- **AI Auto-Categorization:** System logically scans titles to automatically inject smart categorization tags like "Work" or "Personal" instantly.
-- **Live Memory-Dom Tracking:** Dynamically counts and displays real-time word statistics over your entries without network requests.
-- **Glassmorphism Design:** Beautiful dark-mode UI styled using Vercel/Shadcn design aesthetic guidelines.
+We utilize a robust Jenkins Declarative Pipeline (`Jenkinsfile1`) to push changes seamlessly to Kubernetes.
 
-<p align="center">
-  <i>Architected with passion.</i>
-</p>
+1. **Checkout:** Pulls the latest code directly from the `main` branch.
+2. **Build:** Compiles the raw source code into optimized Angular and Node.js Docker containers.
+3. **Registry Push:** Authenticates securely and pushes the `latest` tagged images to Docker Hub.
+4. **K8s Rollout:** Applies all manifests (`namespace`, `configs`, `secrets`, `deployments`) and issues a zero-downtime `kubectl rollout restart` across the ecosystem.
+
+<details>
+<summary>📸 <strong>Click to view CI/CD Screenshots</strong></summary>
+
+<br/>
+<img src="https://github.com/user-attachments/assets/f7a8008d-bf53-4b41-85ca-b1eec97af22f" width="800">
+<img src="https://github.com/user-attachments/assets/2af07c26-576f-4872-b184-35399cb414a2" width="800">
+</details>
+
+---
+
+<div align="center">
+  <b>Built with ❤️ and modern engineering principles.</b><br><br>
+  <img src="https://forthebadge.com/images/badges/built-with-love.svg" alt="Built with Love">
+  <img src="https://forthebadge.com/images/badges/makes-people-smile.svg" alt="Makes People Smile">
+</div>
