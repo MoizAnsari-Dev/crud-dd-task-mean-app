@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: mean-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: moizaman/mean-task-backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /api/tutorials
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /api/tutorials
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        env:
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: mean-app-secret
+              key: DB_URL
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: mean-app-config
+              key: PORT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: mean-app
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
