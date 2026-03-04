@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   backend:
-    image: ${DOCKERHUB_USERNAME:-moizaman}/mean-task-backend:latest
+    build: ./backend
     container_name: mean-backend
     ports:
       - "8080"
@@ -26,7 +26,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: ${DOCKERHUB_USERNAME:-moizaman}/mean-task-frontend:latest
+    build: ./frontend
     container_name: mean-frontend
     ports:
       - "8081"

@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { Tutorial } from '../models/tutorial.model';
 
 // const baseUrl = '/api/tutorials';               // Use this when Nginx is enabled
-const baseUrl = 'http://localhost:8080/api/tutorials';  // Local development
-// const baseUrl = 'http://192.168.49.2:30080/api/tutorials'; // Minikube (Kubernetes)
+// const baseUrl = 'http://localhost:8080/api/tutorials';  // Local development
+const baseUrl = 'http://192.168.49.2:30080/api/tutorials'; // Minikube (Kubernetes)
 
 
 @Injectable({
