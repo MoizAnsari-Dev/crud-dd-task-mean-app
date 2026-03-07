@@ -22,6 +22,9 @@ pipeline {
 
                     echo "Building Frontend Image from Dockerfile..."
                     sh "docker build -t ${DOCKERHUB_USERNAME}/mean-task-frontend:1.0.$BUILD_NUMBER ./frontend"
+
+                    echo "Building Auth Backend Image from Dockerfile..."
+                    sh "docker build -t ${DOCKERHUB_USERNAME}/mean-task-auth-backend:1.0.$BUILD_NUMBER ./auth-backend"
                 }
             }
         }
@@ -44,6 +47,7 @@ pipeline {
                     echo "Pushing freshly built images to Docker Hub..."
                     sh "docker push ${DOCKERHUB_USERNAME}/mean-task-backend:1.0.$BUILD_NUMBER"
                     sh "docker push ${DOCKERHUB_USERNAME}/mean-task-frontend:1.0.$BUILD_NUMBER"
+                    sh "docker push ${DOCKERHUB_USERNAME}/mean-task-auth-backend:1.0.$BUILD_NUMBER"
                 }
             }
         }
