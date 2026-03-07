@@ -13,7 +13,37 @@ spec:
     kind: Deployment
     name: backend
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 60   # Scale up when avg CPU > 60%
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 70   # Scale up when avg memory > 70%
+---
+# ─────────────────────────────────────────
+# Horizontal Pod Autoscaler — Auth Backend
+# Scales between 1–5 replicas based on CPU
+# ─────────────────────────────────────────
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: auth-backend-hpa
+  namespace: mean-app
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: auth-backend
+  minReplicas: 1
+  maxReplicas: 5
   metrics:
   - type: Resource
     resource:
@@ -43,7 +73,7 @@ spec:
     kind: Deployment
     name: frontend
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 5
   metrics:
   - type: Resource
     resource:
