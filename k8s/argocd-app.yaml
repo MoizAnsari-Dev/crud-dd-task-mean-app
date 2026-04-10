@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mean-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/MoizAnsari-Dev/crud-dd-task-mean-app.git'
+    targetRevision: main # Make sure your branch matches this, e.g., 'main' or 'master'
+    path: k8s
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: mean-app
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

@@ -4,7 +4,9 @@ pipeline {
     environment {
         DOCKERHUB_USERNAME = 'moizaman'
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
+        GITHUB_CREDENTIALS_ID = 'github-credentials' // You will need to add this to Jenkins credentials
         NAMESPACE = 'mean-app'
+        IMAGE_TAG = "build-${BUILD_NUMBER}" // Use dynamic build tags for GitOps
     }
 
     stages {
@@ -18,13 +20,13 @@ pipeline {
             steps {
                 script {
                     echo "Building Backend Image from Dockerfile..."
-                    sh "docker build -t ${DOCKERHUB_USERNAME}/mean-task-backend:latest ./backend"
+                    sh "docker build -t ${DOCKERHUB_USERNAME}/mean-task-backend:${IMAGE_TAG} ./backend"
 
                     echo "Building Frontend Image from Dockerfile..."
-                    sh "docker build -t ${DOCKERHUB_USERNAME}/mean-task-frontend:latest ./frontend"
+                    sh "docker build -t ${DOCKERHUB_USERNAME}/mean-task-frontend:${IMAGE_TAG} ./frontend"
 
                     echo "Building Auth Backend Image from Dockerfile..."
-                    sh "docker build -t ${DOCKERHUB_USERNAME}/mean-task-auth-backend:latest ./auth-backend"
+                    sh "docker build -t ${DOCKERHUB_USERNAME}/mean-task-auth-backend:${IMAGE_TAG} ./auth-backend"
                 }
             }
         }
@@ -44,45 +46,33 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    echo "Pushing latest images to Docker Hub..."
-                    sh "docker push ${DOCKERHUB_USERNAME}/mean-task-backend:latest"
-                    sh "docker push ${DOCKERHUB_USERNAME}/mean-task-frontend:latest"
-                    sh "docker push ${DOCKERHUB_USERNAME}/mean-task-auth-backend:latest"
+                    echo "Pushing images to Docker Hub with tag ${IMAGE_TAG}..."
+                    sh "docker push ${DOCKERHUB_USERNAME}/mean-task-backend:${IMAGE_TAG}"
+                    sh "docker push ${DOCKERHUB_USERNAME}/mean-task-frontend:${IMAGE_TAG}"
+                    sh "docker push ${DOCKERHUB_USERNAME}/mean-task-auth-backend:${IMAGE_TAG}"
                 }
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stage('Update GitOps Manifests') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                        echo "Applying Kubernetes manifests to the cluster..."
-                        
-                        // 1. Create namespace
-                        sh "kubectl apply -f k8s/namespace.yaml"
-                        
-                        // 2. Apply configs and secrets
-                        sh "kubectl apply -f k8s/configmap.yaml"
-                        sh "kubectl apply -f k8s/secret.yaml"
-                        
-                        // 3. Apply persistent storage and database
-                        sh "kubectl apply -f k8s/mongodb.yaml"
-                        
-                        // 4. Apply application deployments
-                        sh "kubectl apply -f k8s/auth-backend.yaml"
-                        sh "kubectl apply -f k8s/backend.yaml"
-                        sh "kubectl apply -f k8s/frontend.yaml"
-                        
-                        // 5. Apply autoscaling rules
-                        sh "kubectl apply -f k8s/hpa.yaml"
+                    echo "Updating Kubernetes manifests for ArgoCD..."
+                    // Update the image tags in the K8s manifests using sed
+                    sh "sed -i 's|moizaman/mean-task-backend:.*|moizaman/mean-task-backend:${IMAGE_TAG}|g' k8s/backend.yaml"
+                    sh "sed -i 's|moizaman/mean-task-frontend:.*|moizaman/mean-task-frontend:${IMAGE_TAG}|g' k8s/frontend.yaml"
+                    sh "sed -i 's|moizaman/mean-task-auth-backend:.*|moizaman/mean-task-auth-backend:${IMAGE_TAG}|g' k8s/auth-backend.yaml"
 
-                        // 6. Apply Ingress proxy rules
-                        sh "kubectl apply -f k8s/ingress.yaml"
-
-                        // Force pods to pull the newly compiled 'latest' image
-                        sh "kubectl rollout restart deployment/auth-backend -n ${NAMESPACE}"
-                        sh "kubectl rollout restart deployment/backend -n ${NAMESPACE}"
-                        sh "kubectl rollout restart deployment/frontend -n ${NAMESPACE}"
+                    // Commit and push changes back to Git so ArgoCD syncs them
+                    withCredentials([gitUsernamePassword(credentialsId: env.GITHUB_CREDENTIALS_ID, gitToolName: 'Default')]) {
+                        sh """
+                            git config user.email "jenkins-ci@example.com"
+                            git config user.name "Jenkins GitOps Bot"
+                            git remote set-url origin https://github.com/MoizAnsari-Dev/crud-dd-task-mean-app.git
+                            git add k8s/backend.yaml k8s/frontend.yaml k8s/auth-backend.yaml
+                            git commit -m "Bump image tags to ${IMAGE_TAG} [skip ci]" || echo "No changes to commit"
+                            git push origin HEAD:main
+                        """
                     }
                 }
             }
@@ -91,7 +81,7 @@ pipeline {
 
     post {
         success {
-            echo "Kubernetes Pipeline deployed successfully! Run 'kubectl get all -n mean-app' to verify."
+            echo "CI pipeline completed! ArgoCD will now detect the changes in GitHub and deploy them to the cluster."
         }
         failure {
             echo "Pipeline failed. Check Jenkins logs for details."
