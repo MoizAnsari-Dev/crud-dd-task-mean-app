@@ -112,6 +112,32 @@ A production environment must anticipate failure. This cluster relies heavily on
 
 ---
 
+## MONITORING & OBSERVABILITY
+
+A production cluster is incomplete without deep visibility. This infrastructure includes a full-stack observability suite powered by the **kube-prometheus-stack**.
+
+*   **Prometheus**: Aggregates time-series metrics from every node and pod in the cluster (CPU, Memory, Disk IO, Network).
+*   **Grafana**: Provides interactive, high-fidelity dashboards to visualize cluster health and application performance.
+*   **Service Monitoring**: Automatically discovers and scrapes metrics from any service with a `ServiceMonitor` definition.
+
+### Accessing the Dashboards
+
+The monitoring stack is managed via GitOps (ArgoCD) in the `monitoring` namespace.
+
+1.  **Deploy the Monitoring Stack**:
+    ```bash
+    kubectl apply -f k8s/monitoring-stack.yaml
+    ```
+2.  **Login to Grafana**:
+    Port-forward the Grafana service to your local machine:
+    ```bash
+    kubectl port-forward svc/monitoring-stack-grafana -n monitoring 3000:80
+    ```
+    *   **URL**: `http://localhost:3000`
+    *   **Default Credentials**: `admin` / `admin`
+
+---
+
 ## DEPLOYMENT & INSTALLATION
 
 To recreate this environment, standard deployment relies entirely on ArgoCD mapping the `/k8s` directory into your cluster.
