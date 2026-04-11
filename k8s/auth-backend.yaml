@@ -1,6 +1,5 @@
-# ============================================================
 # PostgreSQL: PersistentVolumeClaim if you are using a cloud provider or local storage
-# ============================================================
+
 # apiVersion: v1
 # kind: PersistentVolumeClaim
 # metadata:
@@ -13,9 +12,7 @@
 #     requests:
 #       storage: 1Gi
 ---
-# ============================================================
 # PostgreSQL: Deployment
-# ============================================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -79,9 +76,7 @@ spec:
         # persistentVolumeClaim:
         #   claimName: postgres-pvc
 ---
-# ============================================================
 # PostgreSQL: Service (ClusterIP - internal only)
-# ============================================================
 apiVersion: v1
 kind: Service
 metadata:
@@ -95,9 +90,7 @@ spec:
       port: 5432
       targetPort: 5432
 ---
-# ============================================================
 # Auth Backend: Deployment
-# ============================================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -146,9 +139,7 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 15
 ---
-# ============================================================
 # Auth Backend: Service (ClusterIP - accessed via Nginx)
-# ============================================================
 apiVersion: v1
 kind: Service
 metadata:

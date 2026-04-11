@@ -1,7 +1,5 @@
-# ─────────────────────────────────────────
 # Horizontal Pod Autoscaler — Backend
 # Scales between 1–5 replicas based on CPU
-# ─────────────────────────────────────────
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -28,10 +26,8 @@ spec:
         type: Utilization
         averageUtilization: 70   # Scale up when avg memory > 70%
 ---
-# ─────────────────────────────────────────
 # Horizontal Pod Autoscaler — Auth Backend
 # Scales between 1–5 replicas based on CPU
-# ─────────────────────────────────────────
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -58,10 +54,8 @@ spec:
         type: Utilization
         averageUtilization: 70   # Scale up when avg memory > 70%
 ---
-# ─────────────────────────────────────────
 # Horizontal Pod Autoscaler — Frontend
 # Scales between 1–4 replicas based on CPU
-# ─────────────────────────────────────────
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
